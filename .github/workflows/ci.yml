@@ -39,7 +39,10 @@ jobs:
           # Historique complet : un secret retire au commit suivant y reste.
           fetch-depth: 0
 
+      # Action tierce : epinglee au commit, pas au tag. Un tag est deplacable,
+      # donc @v2 laisse un tiers changer le code execute ici. Les actions/* sont
+      # publiees par GitHub et restent suivies par version majeure.
+      # Pas de GITHUB_TOKEN : le balayage lit l'historique local, il n'appelle
+      # pas l'API.
       - name: gitleaks
-        uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: gitleaks/gitleaks-action@ff98106e4c7b2bc287b24eaf42907196329070c7 # v2
