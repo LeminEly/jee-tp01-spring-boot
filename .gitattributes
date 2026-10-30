@@ -1,0 +1,21 @@
+* text=auto eol=lf
+
+*.sh   text eol=lf
+*.bat  text eol=crlf
+
+*.png  binary
+*.jpg  binary
+*.webp binary
+*.avif binary
+*.pdf  binary
+*.woff binary
+*.woff2 binary
+*.ico  binary
+
+# Fichiers générés : exclus des statistiques et repliés dans les revues.
+*.lock          linguist-generated=true
+package-lock.json linguist-generated=true
+
+# --- Maven wrapper ---
+/mvnw   text eol=lf
+*.cmd   text eol=crlf

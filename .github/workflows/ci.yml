@@ -1,0 +1,45 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Compilation et tests (Java 25)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Installer le JDK 25
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: temurin
+          cache: maven
+
+      # Porte bloquante : la compilation et les tests doivent passer.
+      - name: mvnw verify
+        run: ./mvnw -B verify
+
+      # Verifie que l'archive est bien executable, comme a l'exercice 5.1 bis.
+      - name: Verifier le jar produit
+        run: test -f target/mycoolapp-0.0.1-SNAPSHOT.jar
+
+  secrets:
+    name: Balayage des secrets (tout l'historique)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Historique complet : un secret retire au commit suivant y reste.
+          fetch-depth: 0
+
+      - name: gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

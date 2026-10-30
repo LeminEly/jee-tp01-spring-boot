@@ -1,0 +1,84 @@
+
+# Secrets et environnement
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+keys/
+secrets/
+
+# Dépendances et artefacts
+node_modules/
+dist/
+build/
+out/
+.next/
+.turbo/
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+target/
+
+# Caches d'outils
+.cache/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+coverage/
+.coverage
+*.log
+
+# Environnements locaux et sauvegardes
+docker-compose.override.yml
+*.sqlite
+*.sqlite3
+*.dump
+*.sql.gz
+backups/
+
+# Outillage de poste
+.DS_Store
+Thumbs.db
+.idea/
+*.swp
+
+# Fichiers de travail : ils vivent hors du dépôt, dans travail/
+scratch/
+tmp/
+*.tmp
+
+# --- Java / Maven ---
+HELP.md
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+*.class
+
+# --- IDE Java ---
+# Eclipse / STS
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache
+# IntelliJ IDEA
+*.iws
+*.iml
+*.ipr
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/nbdist/
+/.nb-gradle/
+# VS Code
+.vscode/
+
+# --- Captures : le dossier est suivi, son contenu non ---
+screenshots/*
+!screenshots/.gitkeep

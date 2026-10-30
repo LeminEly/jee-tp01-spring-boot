@@ -1,0 +1,33 @@
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+max_line_length = 100
+
+[*.{py,go}]
+indent_size = 4
+
+[*.md]
+trim_trailing_whitespace = false
+
+[Makefile]
+indent_style = tab
+
+# Java et pom : tabulations, convention du code genere par Spring Initializr.
+# Aligner l'outillage sur le code existant plutot que reformater tout le depot.
+[*.java]
+indent_style = tab
+indent_size = 4
+max_line_length = 120
+
+[pom.xml]
+indent_style = tab
+indent_size = 4
+
+[*.properties]
+indent_style = space
+indent_size = 2
