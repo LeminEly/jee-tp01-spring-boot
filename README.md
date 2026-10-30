@@ -119,17 +119,21 @@ indique, dans un terminal, pendant que l'application tourne.
 
 | Fichier | Contenu | Script a lancer |
 | --- | --- | --- |
-| `01-hello.png` | `GET /` renvoie `Hello World!` | `scripts/demo-endpoints.sh` |
-| `02-teaminfo.png` | `GET /teaminfo` renvoie coach et equipe | `scripts/demo-endpoints.sh` |
-| `03-health.png` | `GET /actuator/health` renvoie `UP` | `scripts/demo-actuator.sh` |
-| `04-info.png` | `GET /actuator/info` renvoie les `info.app.*` | `scripts/demo-actuator.sh` |
-| `05-beans-401.png` | `/actuator/beans` sans identifiants renvoie 401 | `scripts/demo-security.sh` |
-| `06-beans-200.png` | `/actuator/beans` avec identifiants renvoie 200 | `scripts/demo-security.sh` |
-| `07-port-8585.png` | la console montrant le demarrage sur 8585 | `scripts/run-8585.sh` |
+| `01-endpoints.png` | `GET /` et `GET /teaminfo` (5.1 et 5.2) | `scripts/demo-endpoints.sh` |
+| `02-demarrage.png` | `sdk env` puis demarrage par le plugin Maven (5.1 bis) | `scripts/run.sh` |
+| `03-tomcat-8080.png` | `Tomcat started on port 8080` et `Started MycoolappApplication` | `scripts/run.sh` |
+| `04-actuator.png` | `/actuator/health` a `UP` et `/actuator/info` (5.5) | `scripts/demo-actuator.sh` |
+| `05-security.png` | `/actuator/beans` en 401 sans identifiants, 200 avec (5.6) | `scripts/demo-security.sh` |
+| `06-package-8585.png` | `./mvnw package` puis `java -jar ... --server.port=8585` (5.7) | `scripts/run-8585.sh` |
+| `07-port-8585.png` | `Tomcat started on port 8585` : l'argument de ligne de commande gagne | `scripts/run-8585.sh` |
 
-Ordre conseille : lancer `scripts/run.sh` dans un terminal, prendre les captures
-01 a 06 dans un second, puis arreter l'application et lancer
-`scripts/run-8585.sh` pour la capture 07.
+Ordre : lancer `scripts/run.sh` dans un terminal et prendre 02 puis 03, prendre
+01, 04 et 05 dans un second terminal pendant que l'application tourne, puis
+arreter l'application et lancer `scripts/run-8585.sh` pour 06 et 07.
+
+Depuis l'exercice 5.6, Spring Security protege **tous** les points d'acces, y
+compris `/` et `/teaminfo`. Les trois scripts de demonstration envoient donc
+les identifiants, qu'ils lisent dans `application.properties`.
 
 ## Reponses aux questions
 
