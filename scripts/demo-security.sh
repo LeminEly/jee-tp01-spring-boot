@@ -6,8 +6,14 @@
 set -uo pipefail
 
 BASE=${BASE:-http://localhost:8080}
-UTILISATEUR=${UTILISATEUR:-abdou}
-MOTDEPASSE=${MOTDEPASSE:-cHk3694}
+
+# Les identifiants sont lus dans application.properties plutot que recopies
+# ici : une seule source de verite, et rien a resynchroniser. Surchargeables
+# par l'environnement.
+PROPS=$(dirname "$0")/../src/main/resources/application.properties
+lire() { sed -n "s/^$1=//p" "$PROPS" | tail -1; }
+UTILISATEUR=${UTILISATEUR:-$(lire 'spring.security.user.name')}
+MOTDEPASSE=${MOTDEPASSE:-$(lire 'spring.security.user.password')}
 LIGNES=${LIGNES:-12}
 
 echo "===== 5.6 : GET /actuator/beans SANS identifiants ====="

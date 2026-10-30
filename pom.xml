@@ -35,6 +35,12 @@
 			<artifactId>spring-boot-starter-webmvc</artifactId>
 		</dependency>
 
+		<!-- Exercice 5.5 : points de controle de supervision. -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+
 		<!-- Exercice 5.4 : rechargement a chaud pendant le developpement.
 		     scope runtime et optional true : DevTools n'est pas une dependance
 		     de compilation, et le plugin l'exclut de l'archive packagee. -->
