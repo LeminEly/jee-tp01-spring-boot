@@ -35,6 +35,12 @@
 			<artifactId>spring-boot-starter-webmvc</artifactId>
 		</dependency>
 
+		<!-- Exercice 5.6 : authentification HTTP Basic par defaut. -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+
 		<!-- Exercice 5.5 : points de controle de supervision. -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

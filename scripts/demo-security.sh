@@ -15,15 +15,21 @@ lire() { sed -n "s/^$1=//p" "$PROPS" | tail -1; }
 UTILISATEUR=${UTILISATEUR:-$(lire 'spring.security.user.name')}
 MOTDEPASSE=${MOTDEPASSE:-$(lire 'spring.security.user.password')}
 LIGNES=${LIGNES:-12}
+LARGEUR=${LARGEUR:-100}
+
+# Le corps de /actuator/beans tient sur UNE seule ligne de plus de 100 ko :
+# tronquer en nombre de lignes ne suffit pas, il faut aussi la largeur, sinon
+# la capture d'ecran est illisible.
+tronquer() { head -n "$LIGNES" | cut -c "1-$LARGEUR"; }
 
 echo "===== 5.6 : GET /actuator/beans SANS identifiants ====="
 echo "\$ curl -i $BASE/actuator/beans"
-curl -sS -i "$BASE/actuator/beans" | head -n "$LIGNES"
+curl -sS -i "$BASE/actuator/beans" | tronquer
 echo
 echo
 
 echo "===== 5.6 : GET /actuator/beans AVEC identifiants ====="
 echo "\$ curl -i -u $UTILISATEUR:<mot de passe> $BASE/actuator/beans"
-curl -sS -i -u "$UTILISATEUR:$MOTDEPASSE" "$BASE/actuator/beans" | head -n "$LIGNES"
+curl -sS -i -u "$UTILISATEUR:$MOTDEPASSE" "$BASE/actuator/beans" | tronquer
 echo
-echo "[sortie tronquee aux $LIGNES premieres lignes]"
+echo "[sortie tronquee a $LIGNES lignes et $LARGEUR colonnes]"
