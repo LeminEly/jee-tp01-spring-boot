@@ -2,47 +2,109 @@ name: ci
 
 on:
   push:
-    branches: [main]
+    # La branche de travail est couverte, pas seulement la branche de rendu.
+    # Une porte qui ne tourne pas la ou le travail se fait ne protege rien.
+    branches: [main, development]
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
 
+# Une poussee qui en remplace une autre annule l'execution devenue inutile.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# Les actions sont epinglees a une empreinte de commit, jamais a un tag : un tag
+# est deplacable, donc @v7 laisserait un tiers changer le code execute ici.
+# Le commentaire porte la version lisible correspondante.
+
 jobs:
-  build:
-    name: Compilation et tests (Java 25)
+  qualite:
+    name: Controles de pre-commit
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Installer le JDK 25
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
         with:
           java-version: '25'
           distribution: temurin
           cache: maven
 
-      # Porte bloquante : la compilation et les tests doivent passer.
+      - name: Installer pre-commit
+        run: pipx install pre-commit
+
+      # Les memes controles qu'en local, rejoues ici. C'est ce qui rend vraie
+      # l'affirmation du .pre-commit-config.yaml et ote tout interet a un
+      # contournement local.
+      - name: pre-commit run --all-files
+        run: pre-commit run --all-files --show-diff-on-failure
+
+  build:
+    name: Compilation, tests et demarrage (Java 25)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Installer le JDK 25
+        uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        with:
+          java-version: '25'
+          distribution: temurin
+          cache: maven
+
+      # Porte bloquante. verify valide aussi l'empreinte epinglee de la
+      # distribution Maven, puisque le wrapper la telecharge ici.
       - name: mvnw verify
         run: ./mvnw -B verify
 
-      # Verifie que l'archive est bien executable, comme a l'exercice 5.1 bis.
-      - name: Verifier le jar produit
+      - name: Verifier que l'archive est produite
         run: test -f target/mycoolapp-0.0.1-SNAPSHOT.jar
+
+      # Qu'une archive existe ne dit pas qu'elle demarre. On la lance et on
+      # attend une reponse reelle. /actuator/health est le seul point ouvert
+      # sans identifiants, donc aucun secret n'est necessaire ici.
+      - name: Demarrer l'archive et verifier qu'elle repond
+        run: |
+          set -u
+          java -jar target/mycoolapp-0.0.1-SNAPSHOT.jar > demarrage.log 2>&1 &
+          pid=$!
+          pret=0
+          for _ in $(seq 1 60); do
+            if curl -fsS http://localhost:8080/actuator/health 2>/dev/null | grep -q '"status":"UP"'; then
+              pret=1
+              break
+            fi
+            if ! kill -0 "$pid" 2>/dev/null; then
+              echo "L'application s'est arretee avant d'etre prete."
+              break
+            fi
+            sleep 1
+          done
+          kill "$pid" 2>/dev/null || true
+          if [ "$pret" -ne 1 ]; then
+            echo "::error::L'archive n'a pas repondu UP sur /actuator/health."
+            tail -40 demarrage.log
+            exit 1
+          fi
+          echo "L'archive demarre et repond UP."
 
   secrets:
     name: Balayage des secrets (tout l'historique)
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           # Historique complet : un secret retire au commit suivant y reste.
           fetch-depth: 0
 
-      # Action tierce : epinglee au commit, pas au tag. Un tag est deplacable,
-      # donc @v2 laisse un tiers changer le code execute ici. Les actions/* sont
-      # publiees par GitHub et restent suivies par version majeure.
-      # Pas de GITHUB_TOKEN : le balayage lit l'historique local, il n'appelle
+      # Pas de GITHUB_TOKEN : le balayage lit l'historique local et n'appelle
       # pas l'API.
       - name: gitleaks
         uses: gitleaks/gitleaks-action@ff98106e4c7b2bc287b24eaf42907196329070c7 # v2

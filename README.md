@@ -1,5 +1,7 @@
 # mycoolapp — TP 01, premier projet Spring Boot 4
 
+[![ci](https://github.com/LeminEly/jee-tp01-spring-boot/actions/workflows/ci.yml/badge.svg)](https://github.com/LeminEly/jee-tp01-spring-boot/actions/workflows/ci.yml)
+
 Application web Spring Boot minimale, support du TP 01 du module JEE. Elle
 expose quelques points d'acces HTTP en texte brut pour demontrer le cycle de vie
 d'un projet Spring Boot : generer, lancer, configurer, monitorer, securiser.
@@ -72,8 +74,34 @@ pre-commit run --all-files
 
 Chacune a ete soumise a un cas fautif et verifiee comme refusante.
 
-Message de commit attendu : `type(portee): sujet`, par exemple
-`feat(5.2): custom properties and /teaminfo`.
+Message de commit attendu : `type(portee): sujet`, la portee entre parentheses
+etant optionnelle. Types acceptes : `feat`, `fix`, `refactor`, `chore`, `docs`,
+`test`, `sec`, `build`, `ci`, `perf`, `revert`. Sujet en minuscule, 60
+caracteres au plus.
+
+```
+feat(5.2): custom properties and /teaminfo
+ci: run the gates on the working branch
+```
+
+### Integration continue
+
+`.github/workflows/ci.yml` tourne sur `main` et sur `development`, en trois
+travaux :
+
+| Travail | Ce qu'il verifie |
+| --- | --- |
+| `qualite` | rejoue **tous** les controles de pre-commit, pour qu'un contournement local ne gagne rien |
+| `build` | `./mvnw verify`, la production de l'archive, puis **le demarrage reel** de l'archive avec une reponse `UP` sur `/actuator/health` |
+| `secrets` | `gitleaks` sur l'historique complet |
+
+Deux precautions sur la chaine d'approvisionnement :
+
+- les actions GitHub sont epinglees a une **empreinte de commit**, pas a un tag,
+  qu'un tiers pourrait deplacer ;
+- `.mvn/wrapper/maven-wrapper.properties` epingle le `sha256` de la distribution
+  Maven, verifie contre le `sha512` publie par Apache. Sans cela, le wrapper
+  executerait ce que l'URL renvoie le jour du telechargement.
 
 ## Reglages IntelliJ pour DevTools
 
