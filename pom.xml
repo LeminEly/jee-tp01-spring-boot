@@ -35,6 +35,16 @@
 			<artifactId>spring-boot-starter-webmvc</artifactId>
 		</dependency>
 
+		<!-- Exercice 5.4 : rechargement a chaud pendant le developpement.
+		     scope runtime et optional true : DevTools n'est pas une dependance
+		     de compilation, et le plugin l'exclut de l'archive packagee. -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+			<optional>true</optional>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webmvc-test</artifactId>

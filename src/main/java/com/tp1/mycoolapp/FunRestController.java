@@ -23,4 +23,9 @@ public class FunRestController {
 		return "Coach: " + coachName + ", Team name: " + teamName;
 	}
 
+	@GetMapping("/workout")
+	public String getDailyWorkout() {
+		return "Run a hard 5k!";
+	}
+
 }
