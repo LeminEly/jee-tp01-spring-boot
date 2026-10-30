@@ -22,7 +22,10 @@ formater() { # met en forme le JSON si jq est present, sinon affiche brut
 montrer() { # $1 = titre, $2 = chemin
 	echo "===== $1 ====="
 	echo "\$ curl -u $UTILISATEUR:<mot de passe> $BASE$2"
-	curl -sS -u "$UTILISATEUR:$MOTDEPASSE" "$BASE$2" | formater
+	# -f : voir scripts/demo-endpoints.sh, registre du socle A.38.
+	if ! curl -fsS -u "$UTILISATEUR:$MOTDEPASSE" "$BASE$2" | formater; then
+		echo "[echec : $BASE$2 n'a pas rendu 2xx]"
+	fi
 	echo
 }
 
