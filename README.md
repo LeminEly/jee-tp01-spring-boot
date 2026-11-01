@@ -114,26 +114,65 @@ Le rechargement a chaud ne fonctionne que si l'IDE recompile de lui-meme.
 
 ## Captures d'ecran
 
-Les captures vivent dans `screenshots/`. Chacune se prend en lancant le script
-indique, dans un terminal, pendant que l'application tourne.
+Les images sont affichees ici, et les fichiers vivent dans `screenshots/`.
+Chacune a ete prise en lancant le script indique sous son titre.
 
-| Fichier | Contenu | Script a lancer |
-| --- | --- | --- |
-| `01-endpoints.png` | `GET /` et `GET /teaminfo` (5.1 et 5.2) | `scripts/demo-endpoints.sh` |
-| `02-demarrage.png` | `sdk env` puis demarrage par le plugin Maven (5.1 bis) | `scripts/run.sh` |
-| `03-tomcat-8080.png` | `Tomcat started on port 8080` et `Started MycoolappApplication` | `scripts/run.sh` |
-| `04-actuator.png` | `/actuator/health` a `UP` et `/actuator/info` (5.5) | `scripts/demo-actuator.sh` |
-| `05-security.png` | `/actuator/beans` en 401 sans identifiants, 200 avec (5.6) | `scripts/demo-security.sh` |
-| `06-package-8585.png` | `./mvnw package` puis `java -jar ... --server.port=8585` (5.7) | `scripts/run-8585.sh` |
-| `07-port-8585.png` | `Tomcat started on port 8585` : l'argument de ligne de commande gagne | `scripts/run-8585.sh` |
+### 5.1 et 5.2 : les points d'acces metier
 
-Ordre : lancer `scripts/run.sh` dans un terminal et prendre 02 puis 03, prendre
-01, 04 et 05 dans un second terminal pendant que l'application tourne, puis
-arreter l'application et lancer `scripts/run-8585.sh` pour 06 et 07.
+`scripts/demo-endpoints.sh`
+
+![GET / renvoie Hello World, GET /teaminfo renvoie le coach et l'equipe](screenshots/01-endpoints.png)
 
 Depuis l'exercice 5.6, Spring Security protege **tous** les points d'acces, y
-compris `/` et `/teaminfo`. Les trois scripts de demonstration envoient donc
-les identifiants, qu'ils lisent dans `application.properties`.
+compris `/` et `/teaminfo`. Les trois scripts de demonstration envoient donc les
+identifiants, qu'ils lisent dans `application.properties`.
+
+### 5.1 bis : le lancement par le plugin Maven
+
+`scripts/run.sh`
+
+![sdk env affiche Java 25, puis mvnw spring-boot:run demarre l'application](screenshots/02-demarrage.png)
+
+![Tomcat started on port 8080 et Started MycoolappApplication](screenshots/03-tomcat-8080.png)
+
+Aucun Tomcat n'a ete installe : le serveur est embarque dans l'application.
+
+### 5.5 : les points de controle d'Actuator
+
+`scripts/demo-actuator.sh`
+
+![/actuator/health repond UP et /actuator/info expose les proprietes info.app](screenshots/04-actuator.png)
+
+### 5.6 : la securite par defaut
+
+`scripts/demo-security.sh`
+
+![/actuator/beans repond 401 sans identifiants et 200 avec](screenshots/05-security.png)
+
+Aucune politique de securite n'a ete ecrite. Ce 401 est le comportement par
+defaut de Spring Security des que le starter est au classpath, ce que
+l'exercice demande precisement d'observer.
+
+### 5.7 : la surcharge du port en ligne de commande
+
+`scripts/run-8585.sh`
+
+![mvnw package puis java -jar avec --server.port=8585](screenshots/06-package-8585.png)
+
+![Tomcat started on port 8585](screenshots/07-port-8585.png)
+
+`application.properties` indique 8080, l'argument de ligne de commande impose
+8585. C'est l'ordre de priorite explique dans `REPONSES.md` : un meme artefact
+sert plusieurs environnements sans etre recompile.
+
+### Reprendre les captures
+
+Lancer `scripts/run.sh` dans un terminal et prendre 02 puis 03. Prendre 01, 04
+et 05 dans un second terminal pendant que l'application tourne. Puis arreter
+l'application et lancer `scripts/run-8585.sh` pour 06 et 07.
+
+Avant de capturer : opacite du terminal a 100 % et autres fenetres fermees, pour
+qu'aucun contenu etranger ne transparaisse.
 
 ## Reponses aux questions
 
